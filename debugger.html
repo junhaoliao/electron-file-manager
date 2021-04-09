@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link as="style" href="https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css"
+        onload="this.onload=null;this.rel='stylesheet'" rel="preload">
+  <noscript>
+    <link href="https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.css" rel="stylesheet">
+  </noscript>
+  <title>FM</title>
+</head>
+<body>
+<form onsubmit="return fm_visit()" class="ui action fluid input">
+  <input type="text" id="fm_addrbar">
+  <button type="submit" class="ui teal right labeled icon button">
+    <i class="arrow right icon"></i>
+    Go
+  </button>
+</form>
+<table class="ui celled striped table">
+  <thead>
+  <tr>
+    <th class="collapsing">
+      <button onclick="fm_up()" class="ui mini  icon  basic button">
+        <i class="angle up icon"></i>
+      </button>
+    </th>
+
+    <th>Name</th>
+    <th style="width: 12ch">Size</th>
+    <th class="collapsing">Date Accessed</th>
+    <th class="collapsing">Date Modified</th>
+  </tr>
+  </thead>
+  <tbody id="file_table_body">
+  </tbody>
+</table>
+<script src="fm.js"></script>
+<script async defer src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script async defer src="https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.js"></script>
+</body>
+</html>
