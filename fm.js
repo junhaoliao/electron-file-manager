@@ -18,17 +18,19 @@ function fm_open() {
 }
 
 function fm_ls(path_input) {
+    let new_cwd = cwd
     if (path_input !== "") {
-        cwd = path.resolve(cwd, path_input)
+        new_cwd = path.resolve(cwd, path_input)
     }
-    const files = fs.readdirSync(cwd)
+
+    const files = fs.readdirSync(new_cwd)
     let file_list = []
     files.forEach((filename) => {
         // TODO: should support showing hidden files
         if (filename.startsWith(".")) {
             return
         }
-        const full_path = path.resolve(cwd, filename)
+        const full_path = path.resolve(new_cwd, filename)
         const attrs = fs.statSync(full_path)
         file_list.push({
             "name": filename,
@@ -38,6 +40,7 @@ function fm_ls(path_input) {
             "mtime": attrs["mtime"]
         })
     })
+    cwd = new_cwd
     return file_list
 }
 
@@ -48,6 +51,8 @@ function fm_close() {
 function updateAddrBar() {
     const fm_addrbar = document.getElementById("fm_addrbar")
     fm_addrbar.value = cwd
+    const fm_addrbar_form = document.getElementById("fm_addrbar_form")
+    fm_addrbar_form.classList.remove("error")
 }
 
 function updateFileView(file_list) {
@@ -112,9 +117,17 @@ function fm_up() {
 
 function fm_visit() {
     const fm_addrbar = document.getElementById("fm_addrbar")
-    const dest_files = fm_ls(fm_addrbar.value)
-    updateAddrBar()
-    updateFileView(dest_files)
+    try {
+        const dest_files = fm_ls(fm_addrbar.value)
+        uncheckCheckAll()
+        updateAddrBar()
+        updateFileView(dest_files)
+    } catch (e) {
+        const fm_addrbar_form = document.getElementById("fm_addrbar_form")
+        fm_addrbar_form.classList.add("error")
+        alert(e)
+    }
+
     return false
 }
 
@@ -134,7 +147,6 @@ function checkAll() {
 }
 
 function uncheckCheckAll() {
-    console.log("called")
     document.getElementById("fm_checkall_box").checked = false
 }
 
