@@ -3,14 +3,14 @@ const homedir = require('os').homedir()
 const path = require('path')
 let cwd = null
 
-function isDir(mode){
+function isDir(mode) {
     return (mode & fs.constants.S_IFMT) === fs.constants.S_IFDIR
 }
 
 // https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string/10420404
 function humanFileSize(size) {
-    const i = (size === 0) ? 0 : Math.floor( Math.log(size) / Math.log(1024) )
-    return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    const i = (size === 0) ? 0 : Math.floor(Math.log(size) / Math.log(1024))
+    return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 }
 
 function fm_open() {
@@ -18,14 +18,14 @@ function fm_open() {
 }
 
 function fm_ls(path_input) {
-    if (path_input !== ""){
+    if (path_input !== "") {
         cwd = path.resolve(cwd, path_input)
     }
     const files = fs.readdirSync(cwd)
     let file_list = []
-    files.forEach((filename)=>{
+    files.forEach((filename) => {
         // TODO: should support showing hidden files
-        if (filename.startsWith(".")){
+        if (filename.startsWith(".")) {
             return
         }
         const full_path = path.resolve(cwd, filename)
@@ -41,7 +41,7 @@ function fm_ls(path_input) {
     return file_list
 }
 
-function fm_close(){
+function fm_close() {
     cwd = null
 }
 
@@ -54,23 +54,31 @@ function updateFileView(file_list) {
     const file_table_body = document.getElementById("file_table_body")
     file_table_body.innerHTML = ""
 
-    file_list.forEach((file)=>{
+    file_list.forEach((file) => {
         const new_tr = document.createElement("tr")
 
         const checkbox_td = document.createElement("td")
         checkbox_td.className = "center aligned"
-        checkbox_td.innerHTML = "<div class=\"ui fitted checkbox\">\n" +
-            "<input type=\"checkbox\"> <label></label>\n" +
-            "</div>"
+
+        const fm_checkbox_div = document.createElement("div")
+        fm_checkbox_div.className = "ui fitted checkbox"
+        const fm_checkbox = document.createElement("input")
+        fm_checkbox.className = "fm_checkbox"
+        fm_checkbox.type = "checkbox"
+        fm_checkbox.onclick = uncheckCheckAll
+        fm_checkbox_div.appendChild(fm_checkbox)
+        fm_checkbox_div.appendChild(document.createElement("label"))
+        checkbox_td.appendChild(fm_checkbox_div)
+
         new_tr.appendChild(checkbox_td)
 
         const name_td = document.createElement("td")
         let size_td = document.createElement("td")
-        if (isDir(file["mode"])){
+        if (isDir(file["mode"])) {
             name_td.innerHTML = "<i class=\"folder icon\"></i> "
             const enter_link = document.createElement("a")
             enter_link.innerText = file["name"]
-            enter_link.onclick = ()=>{
+            enter_link.onclick = () => {
                 const dest_files = fm_ls(path.resolve(cwd, file["name"]))
                 updateAddrBar()
                 updateFileView(dest_files)
@@ -108,6 +116,26 @@ function fm_visit() {
     updateAddrBar()
     updateFileView(dest_files)
     return false
+}
+
+function checkAll() {
+    const fm_checkall_box = document.getElementById("fm_checkall_box")
+    const fm_checkboxes = document.getElementsByClassName("fm_checkbox")
+
+    if (fm_checkall_box.checked) {
+        for (let fm_checkbox of fm_checkboxes) {
+            fm_checkbox.checked = true
+        }
+    } else {
+        for (let fm_checkbox of fm_checkboxes) {
+            fm_checkbox.checked = false
+        }
+    }
+}
+
+function uncheckCheckAll() {
+    console.log("called")
+    document.getElementById("fm_checkall_box").checked = false
 }
 
 fm_open()
