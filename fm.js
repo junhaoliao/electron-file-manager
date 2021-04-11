@@ -13,11 +13,46 @@ function humanFileSize(size) {
     return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 }
 
+
 class FileManager {
     cwd = null
+    div_id = null
 
-    constructor() {
+    constructor(div_id) {
         this.cwd = homedir
+        this.div_id = div_id
+        const fm_div = document.getElementById(div_id)
+        fm_div.innerHTML = `
+<form class="ui action fluid input" id="${div_id}-fm_addrbar_form" onsubmit="return fm.fm_visit()">
+    <button class="ui blue icon button" onclick="fm.fm_up()" type="button">
+        <i class="arrow up icon"></i>
+    </button>
+    <label for="${div_id}-fm_addrbar""></label><input id="${div_id}-fm_addrbar" type="text">
+    <button class="ui teal right labeled icon button" type="submit">
+        <i class="arrow right icon"></i>
+        Go
+    </button>
+</form>
+<table class="ui celled striped table">
+    <thead>
+    <tr>
+        <th class="collapsing">
+            <div class="ui fitted checkbox">
+                <input id="${div_id}-fm_checkall_box" onclick="fm.checkAll()" type="checkbox">
+                <label for="${div_id}-fm_checkall_box"></label>
+            </div>
+        </th>
+
+        <th>Name</th>
+        <th style="width: 12ch">Size</th>
+        <th class="collapsing">Date Accessed</th>
+        <th class="collapsing">Date Modified</th>
+    </tr>
+    </thead>
+    <tbody id="${div_id}-file_table_body">
+    </tbody>
+</table>
+`
     }
 
     fm_close() {
@@ -32,7 +67,7 @@ class FileManager {
         }
 
         let files = null
-        try{
+        try {
             files = fs.readdirSync(new_cwd)
         } catch (e) {
             alert(e)
@@ -46,7 +81,7 @@ class FileManager {
                 return
             }
             const full_path = path.resolve(new_cwd, filename)
-            try{
+            try {
                 const attrs = fs.statSync(full_path)
                 file_list.push({
                     "name": filename,
@@ -71,14 +106,14 @@ class FileManager {
 
 
     updateAddrBar() {
-        const fm_addrbar = document.getElementById("fm_addrbar")
+        const fm_addrbar = document.getElementById(`${this.div_id}-fm_addrbar`)
         fm_addrbar.value = this.cwd
-        const fm_addrbar_form = document.getElementById("fm_addrbar_form")
+        const fm_addrbar_form = document.getElementById(`${this.div_id}-fm_addrbar_form`)
         fm_addrbar_form.classList.remove("error")
     }
 
     updateFileView(file_list) {
-        const file_table_body = document.getElementById("file_table_body")
+        const file_table_body = document.getElementById(`${this.div_id}-file_table_body`)
         file_table_body.innerHTML = ""
 
         file_list.forEach((file) => {
@@ -90,7 +125,7 @@ class FileManager {
             const fm_checkbox_div = document.createElement("div")
             fm_checkbox_div.className = "ui fitted checkbox"
             const fm_checkbox = document.createElement("input")
-            fm_checkbox.className = "fm_checkbox"
+            fm_checkbox.className = `${this.div_id}-fm_checkbox`
             fm_checkbox.type = "checkbox"
             fm_checkbox.onclick = this.uncheckCheckAll
             fm_checkbox_div.appendChild(fm_checkbox)
@@ -138,14 +173,14 @@ class FileManager {
     }
 
     fm_visit() {
-        const fm_addrbar = document.getElementById("fm_addrbar")
+        const fm_addrbar = document.getElementById(`${this.div_id}-fm_addrbar`)
         try {
             const dest_files = this.fm_ls(fm_addrbar.value)
             this.uncheckCheckAll()
             this.updateAddrBar()
             this.updateFileView(dest_files)
         } catch (e) {
-            const fm_addrbar_form = document.getElementById("fm_addrbar_form")
+            const fm_addrbar_form = document.getElementById(`${this.div_id}-fm_addrbar_form`)
             fm_addrbar_form.classList.add("error")
             alert(e)
         }
@@ -154,8 +189,8 @@ class FileManager {
     }
 
     checkAll() {
-        const fm_checkall_box = document.getElementById("fm_checkall_box")
-        const fm_checkboxes = document.getElementsByClassName("fm_checkbox")
+        const fm_checkall_box = document.getElementById(`${this.div_id}-fm_checkall_box`)
+        const fm_checkboxes = document.getElementsByClassName(`${this.div_id}-fm_checkbox`)
 
         if (fm_checkall_box.checked) {
             for (let fm_checkbox of fm_checkboxes) {
@@ -169,11 +204,7 @@ class FileManager {
     }
 
     uncheckCheckAll() {
-        document.getElementById("fm_checkall_box").checked = false
+        document.getElementById(`${this.div_id}-fm_checkall_box`).checked = false
     }
 }
 
-const fm = new FileManager()
-const homedir_files = fm.fm_ls("")
-fm.updateAddrBar()
-fm.updateFileView(homedir_files)
