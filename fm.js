@@ -23,8 +23,8 @@ class FileManager {
         this.div_id = div_id
         const fm_div = document.getElementById(div_id)
         fm_div.innerHTML = `
-<form class="ui action fluid input" id="${div_id}-fm_addrbar_form" onsubmit="return fm.fm_visit()">
-    <button class="ui blue icon button" onclick="fm.fm_up()" type="button">
+<form class="ui action fluid input" id="${div_id}-fm_addrbar_form">
+    <button class="ui blue icon button" id="${div_id}-fm_up_button" type="button">
         <i class="arrow up icon"></i>
     </button>
     <label for="${div_id}-fm_addrbar""></label><input id="${div_id}-fm_addrbar" type="text">
@@ -38,7 +38,7 @@ class FileManager {
     <tr>
         <th class="collapsing">
             <div class="ui fitted checkbox">
-                <input id="${div_id}-fm_checkall_box" onclick="fm.checkAll()" type="checkbox">
+                <input id="${div_id}-fm_checkall_box" type="checkbox">
                 <label for="${div_id}-fm_checkall_box"></label>
             </div>
         </th>
@@ -53,6 +53,18 @@ class FileManager {
     </tbody>
 </table>
 `
+        const fm_addrbar_form = document.getElementById(`${div_id}-fm_addrbar_form`)
+        fm_addrbar_form.onsubmit = ()=>{
+            return this.fm_visit()
+        }
+        const fm_up_button = document.getElementById(`${div_id}-fm_up_button`)
+        fm_up_button.onclick = ()=>{
+            this.fm_up()
+        }
+        const fm_checkall_box = document.getElementById(`${div_id}-fm_checkall_box`)
+        fm_checkall_box.onclick = ()=>{
+            this.checkAll()
+        }
     }
 
     fm_close() {
