@@ -31,7 +31,14 @@ class FileManager {
             new_cwd = path.resolve(this.cwd, path_input)
         }
 
-        const files = fs.readdirSync(new_cwd)
+        let files = null
+        try{
+            files = fs.readdirSync(new_cwd)
+        } catch (e) {
+            alert(e)
+            throw e
+        }
+
         let file_list = []
         files.forEach((filename) => {
             // TODO: should support showing hidden files
@@ -39,14 +46,24 @@ class FileManager {
                 return
             }
             const full_path = path.resolve(new_cwd, filename)
-            const attrs = fs.statSync(full_path)
-            file_list.push({
-                "name": filename,
-                "mode": attrs["mode"],
-                "size": attrs["size"],
-                "atime": attrs["atime"],
-                "mtime": attrs["mtime"]
-            })
+            try{
+                const attrs = fs.statSync(full_path)
+                file_list.push({
+                    "name": filename,
+                    "mode": attrs["mode"],
+                    "size": attrs["size"],
+                    "atime": attrs["atime"],
+                    "mtime": attrs["mtime"]
+                })
+            } catch (e) {
+                file_list.push({
+                    "name": filename,
+                    "mode": 0,
+                    "size": 0,
+                    "atime": new Date(0),
+                    "mtime": new Date(0)
+                })
+            }
         })
         this.cwd = new_cwd
         return file_list
