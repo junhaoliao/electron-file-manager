@@ -10,8 +10,8 @@
     <title>FM</title>
 </head>
 <body>
-<form class="ui action fluid input" id="fm_addrbar_form" onsubmit="return fm_visit()">
-    <button class="ui blue icon button" onclick="fm_up()" type="button">
+<form class="ui action fluid input" id="fm_addrbar_form" onsubmit="return fm.fm_visit()">
+    <button class="ui blue icon button" onclick="fm.fm_up()" type="button">
         <i class="arrow up icon"></i>
     </button>
     <label for="fm_addrbar"></label><input id="fm_addrbar" type="text">
@@ -25,7 +25,7 @@
     <tr>
         <th class="collapsing">
             <div class="ui fitted checkbox">
-                <input id="fm_checkall_box" onclick="checkAll()" type="checkbox">
+                <input id="fm_checkall_box" onclick="fm.checkAll()" type="checkbox">
                 <label for="fm_checkall_box"></label>
             </div>
         </th>
