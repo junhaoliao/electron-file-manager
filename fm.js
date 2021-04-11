@@ -151,6 +151,7 @@ class FileManager {
             if (isDir(file["mode"])) {
                 name_td.innerHTML = "<i class=\"folder icon\"></i> "
                 const enter_link = document.createElement("a")
+                enter_link.style.userSelect = "none"
                 enter_link.innerText = file["name"]
                 enter_link.onclick = () => {
                     const dest_files = this.fm_ls(path.resolve(this.cwd, file["name"]))
