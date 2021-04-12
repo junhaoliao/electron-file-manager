@@ -10,22 +10,14 @@
     <title>FM</title>
 </head>
 <body>
-<div class="ui grid">
-    <div class="eight wide column" id="fm1"></div>
-    <div class="eight wide column" id="fm2"></div>
-</div>
+<div id="tf1"></div>
 
-<script src="fm.js"></script>
+<script src="tf.js"></script>
 <script>
-    const fm1 = new FileManager("fm1")
-    const homedir_files1 = fm1.fm_ls("")
-    fm1.updateAddrBar()
-    fm1.updateFileView(homedir_files1)
-
-    const fm2 = new FileManager("fm2")
-    const homedir_files2 = fm2.fm_ls("")
-    fm2.updateAddrBar()
-    fm2.updateFileView(homedir_files2)
+    const ts1 = new TransferManager("tf1")
+    const local_homedir_files = ts1.localLs("")
+    ts1.fmUpdateAddrBar("local")
+    ts1.fmUpdateFileView("local", local_homedir_files)
 </script>
 <script async defer src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script async defer src="https://cdn.jsdelivr.net/npm/semantic-ui/dist/semantic.min.js"></script>
